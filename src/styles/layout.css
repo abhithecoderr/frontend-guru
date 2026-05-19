@@ -1,0 +1,19 @@
+/* ===========================
+   APP SHELL — 3-COLUMN LAYOUT
+   =========================== */
+
+.app-shell {
+  display: grid;
+  grid-template-columns: var(--sidebar-left-w) 1fr var(--sidebar-right-w);
+  grid-template-rows: 100vh;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ── Topbar (canvas panel strip) ── */
+.canvas-column {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--color-bg-canvas);
+}

@@ -1,0 +1,58 @@
+// registry/index.js
+// Import all 16 unified components
+import * as SectionBlock  from './components/SectionBlock.jsx';
+import * as FlexRow       from './components/FlexRow.jsx';
+import * as FlexColumn    from './components/FlexColumn.jsx';
+import * as ResponsiveGrid from './components/ResponsiveGrid.jsx';
+import * as TextHeading   from './components/TextHeading.jsx';
+import * as ImageMedia    from './components/ImageMedia.jsx';
+import * as Button        from './components/Button.jsx';
+import * as Navbar        from './components/Navbar.jsx';
+import * as HeroBanner    from './components/HeroBanner.jsx';
+import * as ContentCard   from './components/ContentCard.jsx';
+import * as SplitFeature  from './components/SplitFeature.jsx';
+import * as Footer        from './components/Footer.jsx';
+import * as FormInput     from './components/FormInput.jsx';
+import * as TextareaBox   from './components/TextareaBox.jsx';
+import * as Accordion     from './components/Accordion.jsx';
+import * as ModalDialog   from './components/ModalDialog.jsx';
+
+const ALL_COMPONENTS = [
+  SectionBlock,
+  FlexRow,
+  FlexColumn,
+  ResponsiveGrid,
+  TextHeading,
+  ImageMedia,
+  Button,
+  Navbar,
+  HeroBanner,
+  ContentCard,
+  SplitFeature,
+  Footer,
+  FormInput,
+  TextareaBox,
+  Accordion,
+  ModalDialog,
+];
+
+/** Flat map: type → definition config object */
+export const REGISTRY = Object.fromEntries(
+  ALL_COMPONENTS.map(c => [c.config.type, c.config])
+);
+
+/** Flat map: type → visual preview renderer function */
+export const RENDERERS = Object.fromEntries(
+  ALL_COMPONENTS.map(c => [c.config.type, c.Renderer])
+);
+
+/** Grouped list for left catalog sidebar rendering */
+export const GROUPS = ALL_COMPONENTS.reduce((acc, c) => {
+  const def = c.config;
+  if (!acc[def.group]) acc[def.group] = [];
+  acc[def.group].push(def);
+  return acc;
+}, {});
+
+/** Lookup helper */
+export const getDefinition = (type) => REGISTRY[type] ?? null;
