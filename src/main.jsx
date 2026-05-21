@@ -4,7 +4,9 @@ import { createRoot } from 'react-dom/client';
 // Global styles (order matters)
 import './styles/index.css';
 import './styles/layout.css';
-import './styles/sidebar.css';
+import './styles/sidebar-left.css';
+import './styles/sidebar-right.css';
+import './styles/node-renderer.css';
 import './styles/canvas.css';
 import './styles/components.css';
 

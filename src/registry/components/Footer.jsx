@@ -17,7 +17,7 @@ export const config = {
     col3Title: 'Company',
     col3Links: 'About Us, Careers, Contact, Press',
     copyright: '© 2026 Frontend Guru Inc. All Rights Reserved.',
-    background: '#0f172a',
+    background: '#09090b',
   },
   schema: [
     { key: 'logoText',   type: 'text',   label: 'Logo Text' },
@@ -56,7 +56,7 @@ export function Renderer({ props }) {
       </div>
       <div className="preview-footer__bottom">
         <span>{props.copyright}</span>
-        <span style={{ color: '#6366f1', fontWeight: 600 }}>Built with Frontend Guru ⚡</span>
+        <span style={{ color: '#f59e0b', fontWeight: 600 }}>Built with Frontend Guru ⚡</span>
       </div>
     </footer>
   );

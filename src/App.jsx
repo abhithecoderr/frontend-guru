@@ -30,30 +30,21 @@ function PreviewCanvas({ onExit }) {
 
   return (
     <div
+      className="preview-container"
       style={{
-        position: 'fixed',
-        inset: 0,
         backgroundColor: settings.bgColor,
         fontFamily: settings.fontFamily === 'sans-serif' ? 'inherit' : `"${settings.fontFamily}", sans-serif`,
         paddingTop: `${settings.paddingTop}px`,
         paddingBottom: `${settings.paddingBottom}px`,
-        zIndex: 1000,
-        overflow: 'auto',
       }}
     >
       <button
         onClick={onExit}
-        style={{
-          position: 'fixed', top: 12, right: 12, zIndex: 1001,
-          padding: '6px 16px', background: '#6366f1', color: '#fff',
-          border: 'none', borderRadius: 6, cursor: 'pointer',
-          fontFamily: 'inherit', fontWeight: 600, fontSize: 13,
-          boxShadow: '0 4px 12px rgba(99,102,241,0.5)',
-        }}
+        className="preview-exit-btn"
       >
         ◀ Back to Editor
       </button>
-      <div style={{ minHeight: '100vh' }}>
+      <div className="preview-content">
         {activeTree.map(node => <PreviewNode key={node.id} node={node} />)}
       </div>
     </div>
@@ -71,7 +62,6 @@ function Shell() {
       <ComponentSidebar />
       <div className="canvas-column">
         <CanvasPanel
-          isPreview={isPreview}
           onTogglePreview={() => setIsPreview(v => !v)}
         />
         <Canvas />

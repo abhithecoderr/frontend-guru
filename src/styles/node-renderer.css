@@ -1,0 +1,260 @@
+/* ==========================================================================
+   CANVAS NODE RENDERER — OUTLINES, HANDLES & CONTROLS
+   ========================================================================== */
+
+.node-renderer-unknown {
+  padding: 8px;
+  color: #ef4444;
+  font-size: 12px;
+}
+
+.node-wrapper {
+  position: relative;
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+  transition: outline-color var(--ease-fast), opacity var(--ease-fast);
+  container-type: inline-size;
+}
+
+.node-wrapper:hover {
+  outline-color: rgba(255, 158, 11, 0.4);
+}
+
+.node-wrapper.selected {
+  outline-color: var(--color-accent);
+}
+
+.node-wrapper.node-dragging,
+.node-wrapper.node-dragging * {
+  cursor: grabbing !important;
+}
+
+.node-wrapper.node-dragging {
+  opacity: 0.7;
+  outline: 2px dashed var(--color-accent);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* Node Toolbar */
+.node-toolbar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px 4px;
+  background: var(--color-accent);
+  border-radius: 0 0 0 var(--radius-sm);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--ease-fast);
+  z-index: 100;
+}
+
+.node-wrapper:hover .node-toolbar,
+.node-wrapper.selected .node-toolbar {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Node Layer Controls */
+.node-layer-controls {
+  position: absolute;
+  top: -26px;
+  right: -2px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  z-index: 9999;
+  width: auto !important;
+  height: auto !important;
+}
+
+.node-layer-controls__badge {
+  font-size: 9px;
+  color: #ffffff;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  background: #18181b;
+  border: 1px solid var(--color-border);
+  padding: 2px 6px;
+  border-radius: 99px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  user-select: none;
+  height: 20px;
+  line-height: 1;
+}
+
+.node-layer-controls__btn {
+  cursor: pointer;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  transition: all 0.15s ease;
+  padding: 0;
+  line-height: 1;
+}
+
+.node-layer-controls__btn--up {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: #10b981;
+}
+
+.node-layer-controls__btn--up:hover {
+  background: #10b981;
+  color: #000000;
+}
+
+.node-layer-controls__btn--down {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #ef4444;
+}
+
+.node-layer-controls__btn--down:hover {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+/* Drag handle grip */
+.node-toolbar__drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: grab;
+  font-size: 14px;
+  border-radius: 2px;
+  transition: background var(--ease-fast), color var(--ease-fast);
+  flex-shrink: 0;
+}
+
+.node-toolbar__drag-handle:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.node-toolbar__drag-handle:active {
+  cursor: grabbing;
+}
+
+.node-toolbar__label {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: #fff;
+  padding: 0 4px;
+  white-space: nowrap;
+}
+
+.node-toolbar button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border: none;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  cursor: pointer;
+  font-size: 11px;
+  transition: background var(--ease-fast);
+  padding: 0;
+}
+
+.node-toolbar button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.node-toolbar button.danger:hover {
+  background: rgba(239, 68, 68, 0.8);
+}
+
+/* Node Wrapper Resize States & Handles */
+.node-wrapper.resizing {
+  transition: none !important;
+  outline-color: var(--color-accent) !important;
+  outline-style: solid !important;
+}
+
+/* Aligned nodes snap into their slot — freeform grab cursor is inappropriate */
+.node-wrapper.node-aligned {
+  cursor: default;
+}
+
+.node-wrapper.node-aligned .node-resize-handle {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Ensure the inner component elements fill the full dimensions of the node wrapper when resized */
+.node-wrapper > *:not(.node-toolbar):not(.node-resize-handle) {
+  width: 100%;
+  height: 100%;
+}
+
+.node-resize-handle {
+  position: absolute;
+  z-index: 150;
+  transition: opacity var(--ease-fast), background var(--ease-fast), transform var(--ease-fast);
+}
+
+/* East / Width Resizer */
+.node-resize-handle--e {
+  top: 0;
+  right: -4px;
+  width: 8px;
+  height: 100%;
+  cursor: ew-resize;
+  background: transparent;
+}
+
+.node-resize-handle--e:hover,
+.node-wrapper.resizing .node-resize-handle--e {
+  background: rgba(255, 158, 11, 0.4);
+}
+
+/* South / Height Resizer */
+.node-resize-handle--s {
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  cursor: ns-resize;
+  background: transparent;
+}
+
+.node-resize-handle--s:hover,
+.node-wrapper.resizing .node-resize-handle--s {
+  background: rgba(255, 158, 11, 0.4);
+}
+
+/* Southeast / Corner Resizer */
+.node-resize-handle--se {
+  bottom: -4px;
+  right: -4px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  border: 2px solid #ffffff;
+  cursor: nwse-resize;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.node-resize-handle--se:hover {
+  transform: scale(1.2);
+  background: #ffffff;
+  border-color: var(--color-accent);
+}

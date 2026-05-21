@@ -27,7 +27,6 @@ export function useDragSource(source, typeOrId) {
     }
 
     e.stopPropagation();
-    window.__activeDrag = { source, value: typeOrId };
     const payload = JSON.stringify({ source, value: typeOrId });
     e.dataTransfer.setData('application/x-builder', payload);
     e.dataTransfer.effectAllowed = 'move';
@@ -42,7 +41,6 @@ export function useDragSource(source, typeOrId) {
   };
 
   const onDragEnd = (e) => {
-    window.__activeDrag = null;
     const wrapper = e.currentTarget;
     if (wrapper) {
       wrapper.classList.remove('dragging');

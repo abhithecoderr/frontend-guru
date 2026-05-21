@@ -11,7 +11,7 @@ export const config = {
     paddingBottom: 40,
     paddingLeft: 24,
     paddingRight: 24,
-    background: '#ffffff',
+    background: '#09090b',
     borderStyle: 'none',
   },
   schema: [
@@ -29,9 +29,9 @@ export function Renderer({ props, children }) {
     width: '100%',
     padding: `${props.paddingTop}px ${props.paddingRight}px ${props.paddingBottom}px ${props.paddingLeft}px`,
     background: props.background,
-    border: props.borderStyle !== 'none' ? `2px ${props.borderStyle} #e2e8f0` : 'none',
+    border: props.borderStyle !== 'none' ? `2px ${props.borderStyle} #27272a` : 'none',
     borderRadius: 4,
     minHeight: 80,
   };
-  return <section className="layout-container section-block preview-section" style={style}>{children}</section>;
+  return <section className="layout-container section-block preview-section" data-slot-index="0" style={style}>{children}</section>;
 }

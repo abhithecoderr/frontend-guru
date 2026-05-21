@@ -54,5 +54,13 @@ export const GROUPS = ALL_COMPONENTS.reduce((acc, c) => {
   return acc;
 }, {});
 
+/** Catalog group metadata (ordering and display labels) */
+export const GROUP_METADATA = [
+  { id: 'Layout Components', label: 'Layout' },
+  { id: 'Content Primitives', label: 'Content' },
+  { id: 'Form Components', label: 'Interactive' },
+];
+
 /** Lookup helper */
 export const getDefinition = (type) => REGISTRY[type] ?? null;
+

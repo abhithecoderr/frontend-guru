@@ -26,17 +26,27 @@ function loadFromStorage(init) {
 export function BuilderProvider({ children }) {
   const [state, dispatch] = useReducer(builderReducer, initialState, loadFromStorage);
 
-  // Persist (without history arrays)
+  // Persist (without history arrays) — debounced to avoid serializing on every drag frame
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(serializeForStorage(state)));
+    const id = setTimeout(() => {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(serializeForStorage(state)));
+    }, 300);
+    return () => clearTimeout(id);
   }, [state]);
 
   // ── Global keyboard shortcuts ───────────────────────
   useEffect(() => {
     const onKey = (e) => {
       const tag = document.activeElement?.tagName;
-      // Don't fire shortcuts when typing in an input/textarea
-      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+      const el  = document.activeElement;
+      // Don't fire shortcuts when typing in a text field or adjusting a control
+      if (
+        tag === 'INPUT' ||
+        tag === 'TEXTAREA' ||
+        tag === 'SELECT' ||
+        el?.isContentEditable ||
+        el?.closest('[contenteditable]')
+      ) return;
 
       if (e.key === 'Escape') {
         dispatch({ type: 'DESELECT' });
@@ -79,8 +89,12 @@ export function BuilderProvider({ children }) {
 
     updateProps: useCallback((id, patch) => dispatch({ type: 'UPDATE_PROPS', payload: { id, patch } }), []),
 
+    batchUpdateProps: useCallback((updates) => dispatch({ type: 'BATCH_UPDATE_PROPS', payload: { updates } }), []),
+
     // Selection
     selectNode: useCallback((id) => dispatch({ type: 'SELECT_NODE', payload: { id } }), []),
+
+    selectSlot: useCallback((nodeId, slotIndex) => dispatch({ type: 'SELECT_SLOT', payload: { nodeId, slotIndex } }), []),
 
     deselect: useCallback(() => dispatch({ type: 'DESELECT' }), []),
 

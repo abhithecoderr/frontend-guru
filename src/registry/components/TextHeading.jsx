@@ -9,7 +9,7 @@ export const config = {
   defaultProps: {
     content: 'Type some text here...',
     tag: 'h2',
-    color: '#1e293b',
+    color: '#f4f4f5',
     align: 'left',
     fontWeight: '600',
     italic: false,

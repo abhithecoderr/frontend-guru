@@ -1,21 +1,11 @@
 // store/builderReducer.js
 import { nanoid } from 'nanoid';
 import { REGISTRY } from '../registry/index.js';
+import { findNodeWithContext } from '../utils/treeUtils.js';
 
 // ── Tree helpers ───────────────────────────────────────
 
 const clone = (v) => JSON.parse(JSON.stringify(v));
-
-function findNode(tree, id) {
-  for (let i = 0; i < tree.length; i++) {
-    if (tree[i].id === id) return { node: tree[i], arr: tree, index: i };
-    if (tree[i].children?.length) {
-      const found = findNode(tree[i].children, id);
-      if (found) return found;
-    }
-  }
-  return null;
-}
 
 function removeNode(tree, id) {
   for (let i = 0; i < tree.length; i++) {
@@ -27,7 +17,7 @@ function removeNode(tree, id) {
 
 function getChildren(tree, parentId) {
   if (!parentId) return tree;
-  const found = findNode(tree, parentId);
+  const found = findNodeWithContext(tree, parentId);
   return found?.node?.children ?? null;
 }
 
@@ -45,7 +35,7 @@ function insertAfter(arr, node, afterId) {
 }
 
 function applyPatch(tree, id, patch) {
-  const found = findNode(tree, id);
+  const found = findNodeWithContext(tree, id);
   if (found) Object.assign(found.node.props, patch);
 }
 
@@ -58,7 +48,7 @@ function reassignIds(node) {
 // ── Initial state & settings defaults ───────────────────
 
 export const DEFAULT_PAGE_SETTINGS = {
-  bgColor: '#ffffff',
+  bgColor: '#09090b',
   fontFamily: 'Inter',
   paddingTop: 40,
   paddingBottom: 40,
@@ -75,6 +65,7 @@ export const initialState = {
   }],
   activePageId: 'page-1',
   selectedNodeId: null,
+  selectedSlot: null,
   viewport: 'desktop',
   past: [],    // array of pages snapshots for undo
   future: [],  // array of pages snapshots for redo
@@ -82,7 +73,7 @@ export const initialState = {
 
 // ── Actions that mutate the tree and should push history ──
 const HISTORY_ACTIONS = new Set([
-  'ADD_NODE', 'REMOVE_NODE', 'MOVE_NODE', 'UPDATE_PROPS',
+  'ADD_NODE', 'REMOVE_NODE', 'MOVE_NODE', 'UPDATE_PROPS', 'BATCH_UPDATE_PROPS',
   'REORDER_NODE', 'DUPLICATE_NODE', 'UPDATE_CANVAS_SETTINGS',
 ]);
 
@@ -107,6 +98,14 @@ export function builderReducer(state, action) {
   }
 
   switch (action.type) {
+
+    case 'BATCH_UPDATE_PROPS': {
+      return withTree(state, tree => {
+        action.payload.updates.forEach(({ id, patch }) => {
+          applyPatch(tree, id, patch);
+        });
+      });
+    }
 
     case 'ADD_NODE': {
       const { parentId, afterId, componentType, initialProps } = action.payload;
@@ -148,7 +147,7 @@ export function builderReducer(state, action) {
       const id = action.payload?.id || state.selectedNodeId;
       if (!id) return state;
       return withTree(state, tree => {
-        const found = findNode(tree, id);
+        const found = findNodeWithContext(tree, id);
         if (!found) return;
         const { node, arr, index } = found;
         const dup = clone(node);
@@ -158,17 +157,17 @@ export function builderReducer(state, action) {
     }
 
     case 'MOVE_NODE': {
-      const { id, targetParentId, afterId } = action.payload;
+      const { id, targetParentId, afterId, props } = action.payload;
       if (id === targetParentId || id === afterId) return state;
       return withTree(state, tree => {
         // Prevent moving a node into its own descendant
-        const childSubtree = findNode(tree, id);
+        const childSubtree = findNodeWithContext(tree, id);
         if (childSubtree && targetParentId) {
-          const isTargetDescendant = findNode(childSubtree.node.children || [], targetParentId) !== null;
+          const isTargetDescendant = findNodeWithContext(childSubtree.node.children || [], targetParentId) !== null;
           if (isTargetDescendant) return;
         }
 
-        const found = findNode(tree, id);
+        const found = findNodeWithContext(tree, id);
         if (!found) return;
 
         // If moving within the same parent array, check if it's a no-op
@@ -178,12 +177,18 @@ export function builderReducer(state, action) {
         const idx = targetArr.findIndex(n => n.id === id);
         if (idx !== -1) {
           const prevNode = idx > 0 ? targetArr[idx - 1] : null;
-          if (afterId === (prevNode ? prevNode.id : null)) {
+          if (afterId === (prevNode ? prevNode.id : null) && !props) {
             return; // No-op
           }
         }
 
         const nodeClone = clone(found.node);
+        if (props) {
+          nodeClone.props = {
+            ...nodeClone.props,
+            ...props
+          };
+        }
         removeNode(tree, id);
         insertAfter(targetArr, nodeClone, afterId);
       });
@@ -196,15 +201,22 @@ export function builderReducer(state, action) {
     }
 
     case 'SELECT_NODE':
-      return { ...state, selectedNodeId: action.payload.id };
+      return { ...state, selectedNodeId: action.payload.id, selectedSlot: null };
+
+    case 'SELECT_SLOT':
+      return {
+        ...state,
+        selectedNodeId: action.payload.nodeId,
+        selectedSlot: { nodeId: action.payload.nodeId, slotIndex: action.payload.slotIndex }
+      };
 
     case 'DESELECT':
-      return { ...state, selectedNodeId: null };
+      return { ...state, selectedNodeId: null, selectedSlot: null };
 
     case 'REORDER_NODE': {
       const { id, direction } = action.payload;
       return withTree(state, tree => {
-        const found = findNode(tree, id);
+        const found = findNodeWithContext(tree, id);
         if (!found) return;
         const { arr, index } = found;
         const newIdx = direction === 'up' ? index - 1 : index + 1;
@@ -252,7 +264,7 @@ export function builderReducer(state, action) {
     }
 
     case 'SET_ACTIVE_PAGE':
-      return { ...state, activePageId: action.payload.pageId, selectedNodeId: null };
+      return { ...state, activePageId: action.payload.pageId, selectedNodeId: null, selectedSlot: null };
 
     case 'SET_VIEWPORT':
       return { ...state, viewport: action.payload.viewport };
@@ -266,6 +278,7 @@ export function builderReducer(state, action) {
         past: state.past.slice(0, -1),
         future: [state.pages, ...state.future].slice(0, 50),
         selectedNodeId: null,
+        selectedSlot: null,
       };
     }
 
@@ -278,6 +291,7 @@ export function builderReducer(state, action) {
         past: [...state.past, state.pages].slice(-50),
         future: state.future.slice(1),
         selectedNodeId: null,
+        selectedSlot: null,
       };
     }
 

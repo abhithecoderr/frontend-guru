@@ -8,7 +8,7 @@ const VIEWPORTS = [
   { id: 'mobile',  label: 'Mobile',  icon: '📱' },
 ];
 
-export default function CanvasPanel({ onTogglePreview, isPreview }) {
+export default function CanvasPanel({ onTogglePreview }) {
   const { state, actions } = useBuilder();
   const [editingId, setEditingId] = useState(null);
   const [editName, setEditName] = useState('');
@@ -60,6 +60,7 @@ export default function CanvasPanel({ onTogglePreview, isPreview }) {
             {editingId === page.id ? (
               <input
                 autoFocus
+                className="page-tab__input"
                 value={editName}
                 onChange={e => setEditName(e.target.value)}
                 onBlur={commitRename}
@@ -67,7 +68,7 @@ export default function CanvasPanel({ onTogglePreview, isPreview }) {
                   if (e.key === 'Enter') commitRename();
                   if (e.key === 'Escape') setEditingId(null);
                 }}
-                style={{ background: 'transparent', border: 'none', outline: 'none', color: 'inherit', font: 'inherit', width: `${Math.max(editName.length, 3)}ch` }}
+                style={{ width: `${Math.max(editName.length, 3)}ch` }}
                 onClick={e => e.stopPropagation()}
               />
             ) : page.name}
@@ -105,22 +106,20 @@ export default function CanvasPanel({ onTogglePreview, isPreview }) {
       <div className="panel-strip__divider" />
 
       {/* ── Right actions ── */}
-      <div style={{ marginLeft: 'auto', display: 'flex', gap: 4, alignItems: 'center' }}>
-        <button
-          className={`viewport-btn${isPreview ? ' active' : ''}`}
-          onClick={onTogglePreview}
-          title="Toggle Preview Mode"
-          style={{ color: isPreview ? 'var(--color-success)' : undefined }}
-        >
-          {isPreview ? '◀ Edit' : '▶ Preview'}
-        </button>
+      <div className="canvas-panel-right-actions">
         <button
           className="viewport-btn"
+          onClick={onTogglePreview}
+          title="Toggle Preview Mode"
+        >
+          ▶ Preview
+        </button>
+        <button
+          className="viewport-btn canvas-panel-reset-btn"
           onClick={() => {
             if (window.confirm('Reset all pages? This cannot be undone.')) actions.resetState();
           }}
           title="Reset canvas"
-          style={{ color: 'var(--color-text-muted)' }}
         >
           🗑
         </button>

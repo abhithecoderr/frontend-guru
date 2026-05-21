@@ -13,7 +13,7 @@ export const config = {
     features: 'Tailored state logic, Pure HSL color themes, Glassmorphic sidebars',
     imagePosition: 'left',
     mediaEmoji: '💎',
-    background: '#ffffff',
+    background: '#09090b',
   },
   schema: [
     { key: 'label',         type: 'text',   label: 'Feature Eyebrow' },

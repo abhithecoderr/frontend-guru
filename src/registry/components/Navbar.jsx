@@ -12,7 +12,7 @@ export const config = {
     links: 'Home, Features, Pricing, About',
     ctaLabel: 'Get Started',
     ctaVariant: 'primary',
-    background: '#ffffff',
+    background: '#09090b',
     sticky: false,
   },
   schema: [

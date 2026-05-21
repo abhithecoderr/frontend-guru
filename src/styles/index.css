@@ -6,28 +6,28 @@
 
 /* ── Tokens ───────────────────────────────────────────── */
 :root {
-  /* Color palette */
-  --color-bg-app:       #0d0f12;
-  --color-bg-sidebar:   #13161b;
-  --color-bg-panel:     #1a1d24;
-  --color-bg-canvas:    #1e2128;
-  --color-bg-hover:     #22262f;
-  --color-bg-active:    #282d38;
-  --color-surface:      #2a2f3d;
-  --color-surface-2:    #343a4a;
+  /* Premium slate-free luxury obsidian and dark charcoal theme */
+  --color-bg-app:       #070708; /* obsidian matte black */
+  --color-bg-sidebar:   #0d0d0f; /* rich obsidian panel black */
+  --color-bg-panel:     #151518; /* dark container background */
+  --color-bg-canvas:    #1b1b1f; /* deep charcoal editor viewport background */
+  --color-bg-hover:     #222226; /* clean neutral grey hover */
+  --color-bg-active:    #2b2b30; /* clean neutral active */
+  --color-surface:      #1f1f23; /* neutral dark surface container */
+  --color-surface-2:    #28282e; /* elevated neutral surface container */
 
-  --color-border:       rgba(255,255,255,0.07);
-  --color-border-focus: rgba(99,102,241,0.6);
-  --color-border-drop:  rgba(99,102,241,0.8);
+  --color-border:       rgba(255, 255, 255, 0.06); /* subtle light crisp separator */
+  --color-border-focus: #f59e0b; /* warm gold accent border focus */
+  --color-border-drop:  #f59e0b; /* amber drop highlight active */
 
-  --color-text-primary:  #e8eaf0;
-  --color-text-secondary:#8b90a0;
-  --color-text-muted:    #555b6e;
-  --color-text-accent:   #818cf8;
+  --color-text-primary:  #f4f4f5; /* high-contrast off-white primary text */
+  --color-text-secondary:#a1a1aa; /* clean neutral grey secondary text */
+  --color-text-muted:    #65656b; /* muted dark grey text */
+  --color-text-accent:   #f59e0b; /* warm gold/amber secondary accent text */
 
-  --color-accent:        #6366f1;
-  --color-accent-hover:  #4f51e8;
-  --color-accent-glow:   rgba(99,102,241,0.25);
+  --color-accent:        #ff9e0b; /* premium accent color warm amber */
+  --color-accent-hover:  #d97706; /* hover state accent color warm amber */
+  --color-accent-glow:   rgba(255, 158, 11, 0.12); /* accent glow backdrop ring */
   --color-success:       #10b981;
   --color-warning:       #f59e0b;
   --color-danger:        #ef4444;

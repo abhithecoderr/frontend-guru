@@ -12,7 +12,7 @@ export const config = {
     text: 'Build completely dynamic custom applications using responsive visual interfaces built live.',
     ctaLabel: 'Learn More',
     mediaEmoji: '🚀',
-    mediaBackground: '#e0e7ff',
+    mediaBackground: '#27272a',
   },
   schema: [
     { key: 'tag',             type: 'text',   label: 'Card Tag/Badge' },

@@ -30,6 +30,8 @@ export function Renderer({ props }) {
       className={`preview-btn preview-btn--${props.variant} preview-btn--${props.size}`}
       style={style}
       onClick={e => e.preventDefault()}
+      onMouseDown={e => e.preventDefault()}
+      onDragStart={e => e.preventDefault()}
     >
       {props.label}
     </a>
