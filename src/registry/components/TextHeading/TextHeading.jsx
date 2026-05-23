@@ -1,4 +1,5 @@
 import React from 'react';
+import './TextHeading.css';
 
 export const config = {
   type: 'TextHeading',

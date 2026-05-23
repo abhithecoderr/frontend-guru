@@ -1,0 +1,34 @@
+/* ── 8. Navbar ── */
+.preview-navbar {
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
+  height: 64px;
+  border-bottom: 1px solid #27272a;
+  gap: 32px;
+}
+.preview-navbar__logo {
+  font-size: 18px;
+  font-weight: 800;
+  color: #f4f4f5;
+  white-space: nowrap;
+}
+.preview-navbar__logo span { color: #ff9e0b; }
+.preview-navbar__links {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  list-style: none;
+  flex: 1;
+}
+.preview-navbar__links a {
+  font-size: 14px;
+  font-weight: 500;
+  color: #a1a1aa;
+  text-decoration: none;
+  transition: color 150ms;
+}
+.preview-navbar__links a:hover { color: #ff9e0b; }
+.preview-navbar__cta {
+  margin-left: auto;
+}

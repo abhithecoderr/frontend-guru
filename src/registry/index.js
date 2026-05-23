@@ -1,21 +1,21 @@
 // registry/index.js
 // Import all 16 unified components
-import * as SectionBlock  from './components/SectionBlock.jsx';
-import * as FlexRow       from './components/FlexRow.jsx';
-import * as FlexColumn    from './components/FlexColumn.jsx';
-import * as ResponsiveGrid from './components/ResponsiveGrid.jsx';
-import * as TextHeading   from './components/TextHeading.jsx';
-import * as ImageMedia    from './components/ImageMedia.jsx';
-import * as Button        from './components/Button.jsx';
-import * as Navbar        from './components/Navbar.jsx';
-import * as HeroBanner    from './components/HeroBanner.jsx';
-import * as ContentCard   from './components/ContentCard.jsx';
-import * as SplitFeature  from './components/SplitFeature.jsx';
-import * as Footer        from './components/Footer.jsx';
-import * as FormInput     from './components/FormInput.jsx';
-import * as TextareaBox   from './components/TextareaBox.jsx';
-import * as Accordion     from './components/Accordion.jsx';
-import * as ModalDialog   from './components/ModalDialog.jsx';
+import * as SectionBlock  from './components/SectionBlock/SectionBlock.jsx';
+import * as FlexRow       from './components/FlexRow/FlexRow.jsx';
+import * as FlexColumn    from './components/FlexColumn/FlexColumn.jsx';
+import * as ResponsiveGrid from './components/ResponsiveGrid/ResponsiveGrid.jsx';
+import * as TextHeading   from './components/TextHeading/TextHeading.jsx';
+import * as ImageMedia    from './components/ImageMedia/ImageMedia.jsx';
+import * as Button        from './components/Button/Button.jsx';
+import * as Navbar        from './components/Navbar/Navbar.jsx';
+import * as HeroBanner    from './components/HeroBanner/HeroBanner.jsx';
+import * as ContentCard   from './components/ContentCard/ContentCard.jsx';
+import * as SplitFeature  from './components/SplitFeature/SplitFeature.jsx';
+import * as Footer        from './components/Footer/Footer.jsx';
+import * as FormInput     from './components/FormInput/FormInput.jsx';
+import * as TextareaBox   from './components/TextareaBox/TextareaBox.jsx';
+import * as Accordion     from './components/Accordion/Accordion.jsx';
+import * as ModalDialog   from './components/ModalDialog/ModalDialog.jsx';
 
 const ALL_COMPONENTS = [
   SectionBlock,

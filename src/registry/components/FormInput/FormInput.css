@@ -1,0 +1,30 @@
+/* ── 13. Form Input Group ── */
+.preview-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 0;
+}
+.preview-form-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #e4e4e7;
+}
+.preview-form-label span {
+  color: #ef4444;
+  margin-left: 2px;
+}
+.preview-form-input {
+  padding: 10px 14px;
+  border: 1.5px solid #27272a;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #f4f4f5;
+  background: #18181b;
+  outline: none;
+  transition: border-color 150ms, box-shadow 150ms;
+  font-family: inherit;
+  width: 100%;
+}
+.preview-form-input:focus { border-color: #ff9e0b; box-shadow: 0 0 0 3px rgba(255, 158, 11, 0.15); }
+.preview-form-hint { font-size: 12px; color: #71717a; }

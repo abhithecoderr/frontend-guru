@@ -1,0 +1,7 @@
+/* ── 3. Flex Column ── */
+.flex-col {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  box-sizing: border-box;
+}

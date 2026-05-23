@@ -443,18 +443,18 @@
 
 /* Layout container boundaries in the editor canvas */
 .canvas-frame .layout-container {
-  border: 2px dashed rgba(255, 158, 11, 0.25) !important;
+  border: 2px dashed rgba(255, 158, 11, 0.25);
   transition: border-color var(--ease-fast), box-shadow var(--ease-fast);
 }
 
 .canvas-frame .layout-container:hover {
-  border-color: rgba(255, 158, 11, 0.45) !important;
+  border-color: rgba(255, 158, 11, 0.45);
   box-shadow: inset 0 0 4px rgba(255, 158, 11, 0.03);
 }
 
 .canvas-frame .layout-container.selected {
-  border-color: var(--color-accent) !important;
-  border-style: dashed !important;
+  border-color: var(--color-accent);
+  border-style: dashed;
   box-shadow: inset 0 0 6px rgba(255, 158, 11, 0.08);
 }
 

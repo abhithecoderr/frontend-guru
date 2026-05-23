@@ -2,6 +2,8 @@
 // Shared tree traversal helpers used across Canvas, NodeRenderer, InspectorPanel, and LayersPanel.
 // Single source of truth — do not duplicate these in individual files.
 
+import { nanoid } from 'nanoid';
+
 /**
  * Find a node anywhere in the tree by id. Returns the node or null.
  */
@@ -75,4 +77,54 @@ export function findNodeWithContext(tree, id) {
     }
   }
   return null;
+}
+
+/**
+ * Recursively deletes a node from the tree by its ID.
+ */
+export function removeNode(tree, id) {
+  for (let i = 0; i < tree.length; i++) {
+    if (tree[i].id === id) { tree.splice(i, 1); return true; }
+    if (tree[i].children?.length && removeNode(tree[i].children, id)) return true;
+  }
+  return false;
+}
+
+/**
+ * Retrieves the children of a node by parentId, or the root tree if parentId is null.
+ */
+export function getChildren(tree, parentId) {
+  if (!parentId) return tree;
+  const found = findNodeWithContext(tree, parentId);
+  return found?.node?.children ?? null;
+}
+
+/**
+ * Inserts a node into a flat array based on afterId rules:
+ * afterId = null  → prepend (insert at index 0)
+ * afterId = id    → insert after that node
+ * afterId = '__append__' → push to end
+ */
+export function insertAfter(arr, node, afterId) {
+  if (afterId === null) { arr.unshift(node); return; }
+  if (afterId === '__append__') { arr.push(node); return; }
+  const idx = arr.findIndex(n => n.id === afterId);
+  if (idx === -1) { arr.push(node); return; }
+  arr.splice(idx + 1, 0, node);
+}
+
+/**
+ * Recursively finds a node and merges the property patch.
+ */
+export function applyPatch(tree, id, patch) {
+  const found = findNodeWithContext(tree, id);
+  if (found) Object.assign(found.node.props, patch);
+}
+
+/**
+ * Recursively assigns a new nanoid to every node in a subtree (used during duplicate).
+ */
+export function reassignIds(node) {
+  node.id = nanoid(8);
+  if (node.children) node.children.forEach(reassignIds);
 }

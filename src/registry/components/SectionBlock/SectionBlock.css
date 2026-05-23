@@ -1,0 +1,9 @@
+/* ── 1. Section Block ── */
+.preview-section {
+  width: 100%;
+  padding: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}

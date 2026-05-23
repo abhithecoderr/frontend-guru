@@ -1,0 +1,21 @@
+/* ── 14. Textarea Box ── */
+.preview-textarea {
+  padding: 10px 14px;
+  border: 1.5px solid #27272a;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #f4f4f5;
+  background: #18181b;
+  outline: none;
+  transition: border-color 150ms, box-shadow 150ms;
+  font-family: inherit;
+  width: 100%;
+  resize: vertical;
+  min-height: 100px;
+}
+.preview-textarea:focus { border-color: #ff9e0b; box-shadow: 0 0 0 3px rgba(255, 158, 11, 0.15); }
+
+.preview-form-label span {
+  color: #ef4444;
+  margin-left: 2px;
+}

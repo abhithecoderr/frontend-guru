@@ -1,4 +1,5 @@
 import React from 'react';
+import './SplitFeature.css';
 
 export const config = {
   type: 'SplitFeature',

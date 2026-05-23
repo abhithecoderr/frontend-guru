@@ -1,4 +1,4 @@
-// components/sidebar-right/inspectors/PropertyControls.jsx
+import React, { useState, useEffect } from 'react';
 
 /**
  * Standard Text input property control.
@@ -21,14 +21,44 @@ export function TextField({ fieldKey, label, value, onChange }) {
  * Number input property control with optional unit label.
  */
 export function NumberField({ fieldKey, label, value, unit, onChange }) {
+  const [localValue, setLocalValue] = useState(
+    value !== undefined && value !== null ? String(value) : ''
+  );
+
+  useEffect(() => {
+    if (value === undefined || value === null) {
+      setLocalValue('');
+    } else {
+      // Only sync from props when the parsed numerical value differs.
+      // This allows the user to clear the input or type leading zeros without snapping.
+      if (Number(localValue) !== value) {
+        setLocalValue(String(value));
+      }
+    }
+  }, [value]);
+
+  const handleChange = (e) => {
+    const rawVal = e.target.value;
+    setLocalValue(rawVal);
+
+    if (rawVal === '') {
+      onChange(fieldKey, 0);
+    } else {
+      const num = Number(rawVal);
+      if (!isNaN(num)) {
+        onChange(fieldKey, num);
+      }
+    }
+  };
+
   return (
     <div className="field-group">
       <label className="field-label">{label}{unit ? ` (${unit})` : ''}</label>
       <input
         type="number"
         className="field-input"
-        value={value ?? 0}
-        onChange={e => onChange(fieldKey, Number(e.target.value))}
+        value={localValue}
+        onChange={handleChange}
         style={{ width: '100%' }}
       />
     </div>

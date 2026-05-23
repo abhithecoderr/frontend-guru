@@ -22,27 +22,7 @@ export default function useNodeResizer(node, wrapperRef, actions) {
     const maxAllowedWidth = Math.max(50, parentWidth - left);
     const maxAllowedHeight = Math.max(20, parentHeight - top);
 
-    // Measure the actual natural minimum height of the inner component to prevent the selector outline
-    // from shrinking smaller than the element itself.
-    const childEl = wrapperRef.current
-      ? Array.from(wrapperRef.current.children).find(
-          el => !el.classList.contains('node-resize-handle') && !el.classList.contains('node-toolbar')
-        )
-      : null;
-
-    let minRequiredHeight = 20;
-    if (childEl) {
-      const origWrapperHeight = wrapperRef.current.style.height;
-      const origChildHeight = childEl.style.height;
-      
-      wrapperRef.current.style.height = 'auto';
-      childEl.style.height = 'auto';
-      
-      minRequiredHeight = Math.max(20, childEl.offsetHeight);
-      
-      wrapperRef.current.style.height = origWrapperHeight;
-      childEl.style.height = origChildHeight;
-    }
+    let minRequiredHeight = node.props.minHeight !== undefined ? node.props.minHeight : 20;
 
     let finalWidth = startWidth;
     let finalHeight = startHeight;
@@ -58,6 +38,7 @@ export default function useNodeResizer(node, wrapperRef, actions) {
         if (wrapperRef.current) {
           wrapperRef.current.style.width = `${finalWidth}px`;
         }
+        actions.updatePropsSilent(node.id, { width: finalWidth });
       }
 
       if (direction === 's' || direction === 'se') {
@@ -65,6 +46,7 @@ export default function useNodeResizer(node, wrapperRef, actions) {
         if (wrapperRef.current) {
           wrapperRef.current.style.height = `${finalHeight}px`;
         }
+        actions.updatePropsSilent(node.id, { height: finalHeight });
       }
     }
 

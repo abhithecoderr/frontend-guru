@@ -1,75 +1,12 @@
 // store/builderReducer.js
 import { nanoid } from 'nanoid';
 import { REGISTRY } from '../registry/index.js';
-import { findNodeWithContext } from '../utils/treeUtils.js';
+import { findNodeWithContext, removeNode, getChildren, insertAfter, applyPatch, reassignIds } from '../utils/treeUtils.js';
+import { DEFAULT_PAGE_SETTINGS } from '../utils/defaults.js';
 
 // ── Tree helpers ───────────────────────────────────────
 
 const clone = (v) => JSON.parse(JSON.stringify(v));
-
-function removeNode(tree, id) {
-  for (let i = 0; i < tree.length; i++) {
-    if (tree[i].id === id) { tree.splice(i, 1); return true; }
-    if (tree[i].children?.length && removeNode(tree[i].children, id)) return true;
-  }
-  return false;
-}
-
-function getChildren(tree, parentId) {
-  if (!parentId) return tree;
-  const found = findNodeWithContext(tree, parentId);
-  return found?.node?.children ?? null;
-}
-
-/**
- * afterId = null  → prepend (insert at index 0)
- * afterId = id    → insert after that node
- * afterId = '__append__' → push to end
- */
-function insertAfter(arr, node, afterId) {
-  if (afterId === null) { arr.unshift(node); return; }
-  if (afterId === '__append__') { arr.push(node); return; }
-  const idx = arr.findIndex(n => n.id === afterId);
-  if (idx === -1) { arr.push(node); return; }
-  arr.splice(idx + 1, 0, node);
-}
-
-function applyPatch(tree, id, patch) {
-  const found = findNodeWithContext(tree, id);
-  if (found) Object.assign(found.node.props, patch);
-}
-
-/** Recursively assign new nanoid to every node in a subtree */
-function reassignIds(node) {
-  node.id = nanoid(8);
-  if (node.children) node.children.forEach(reassignIds);
-}
-
-// ── Initial state & settings defaults ───────────────────
-
-export const DEFAULT_PAGE_SETTINGS = {
-  bgColor: '#09090b',
-  fontFamily: 'Inter',
-  paddingTop: 40,
-  paddingBottom: 40,
-  canvasHeight: 650,
-  layoutMode: 'flow',
-};
-
-export const initialState = {
-  pages: [{
-    id: 'page-1',
-    name: 'Home',
-    tree: [],
-    settings: { ...DEFAULT_PAGE_SETTINGS },
-  }],
-  activePageId: 'page-1',
-  selectedNodeId: null,
-  selectedSlot: null,
-  viewport: 'desktop',
-  past: [],    // array of pages snapshots for undo
-  future: [],  // array of pages snapshots for redo
-};
 
 // ── Actions that mutate the tree and should push history ──
 const HISTORY_ACTIONS = new Set([
@@ -98,6 +35,12 @@ export function builderReducer(state, action) {
   }
 
   switch (action.type) {
+
+    case 'UPDATE_PROPS_SILENT': {
+      return withTree(state, tree => {
+        applyPatch(tree, action.payload.id, action.payload.patch);
+      });
+    }
 
     case 'BATCH_UPDATE_PROPS': {
       return withTree(state, tree => {

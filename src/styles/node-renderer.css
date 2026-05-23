@@ -201,7 +201,12 @@
 /* Ensure the inner component elements fill the full dimensions of the node wrapper when resized */
 .node-wrapper > *:not(.node-toolbar):not(.node-resize-handle) {
   width: 100%;
+}
+
+/* If the parent wrapper has a fixed height, the inner component fills the wrapper and clips overflow safely */
+.node-wrapper.has-fixed-height > *:not(.node-toolbar):not(.node-resize-handle) {
   height: 100%;
+  overflow: hidden;
 }
 
 .node-resize-handle {

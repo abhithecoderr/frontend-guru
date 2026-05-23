@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './Accordion.css';
 
 export const config = {
   type: 'Accordion',

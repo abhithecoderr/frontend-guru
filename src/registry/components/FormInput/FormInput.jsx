@@ -1,4 +1,5 @@
 import React from 'react';
+import './FormInput.css';
 
 export const config = {
   type: 'FormInput',
@@ -27,7 +28,7 @@ export function Renderer({ props }) {
     <div className="preview-form-group">
       <label className="preview-form-label">
         {props.label}
-        {props.required && <span style={{ color: '#ef4444', marginLeft: 2 }}>*</span>}
+        {props.required && <span>*</span>}
       </label>
       <input
         type={props.type}

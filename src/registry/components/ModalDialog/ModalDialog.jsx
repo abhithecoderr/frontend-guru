@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './ModalDialog.css';
 
 export const config = {
   type: 'ModalDialog',

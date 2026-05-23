@@ -50,33 +50,38 @@ export default function NodeRenderer({ node, parentId = null }) {
 
   const widthVal  = node.props?.width;
   const heightVal = node.props?.height;
+  const minHeightVal = node.props?.minHeight;
 
   const isFullWidth  = isLayout && (widthVal === 0 || widthVal === undefined);
   const widthStyle   = isFullWidth ? '100%' : (widthVal ? `${widthVal}px` : '350px');
   const heightStyle  = heightVal === 0 ? 'auto' : (heightVal ? `${heightVal}px` : 'auto');
+  const minHeightStyle = minHeightVal !== undefined ? `${minHeightVal}px` : undefined;
 
   const currentZ = node.props.zIndex !== undefined ? node.props.zIndex : 1;
 
   // Cursor: show grab when selected and draggable, default otherwise
   const cursorStyle = isSelected ? 'grab' : 'default';
 
+  const hasFixedHeight = heightVal && heightVal > 0;
+
   return (
     <div
       ref={wrapperRef}
-      className={`node-wrapper${isSelected ? ' selected' : ''}${isAligned ? ' node-aligned' : ''}`}
+      className={`node-wrapper${isSelected ? ' selected' : ''}${isAligned ? ' node-aligned' : ''}${hasFixedHeight ? ' has-fixed-height' : ''}`}
       data-node-id={node.id}
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
       onMouseDown={handleMouseDown}
       style={{
-        width:    widthStyle,
-        height:   heightStyle,
-        position: isAligned ? 'relative' : 'absolute',
-        left:     isAligned ? 0 : left,
-        top:      isAligned ? 0 : top,
-        margin:   0,
-        zIndex:   currentZ,
-        cursor:   cursorStyle,
+        width:     widthStyle,
+        height:    heightStyle,
+        minHeight: minHeightStyle,
+        position:  isAligned ? 'relative' : 'absolute',
+        left:      isAligned ? 0 : left,
+        top:       isAligned ? 0 : top,
+        margin:    0,
+        zIndex:    currentZ,
+        cursor:    cursorStyle,
       }}
     >
       {/* ── Layer Stacking Controls (only when selected) ── */}

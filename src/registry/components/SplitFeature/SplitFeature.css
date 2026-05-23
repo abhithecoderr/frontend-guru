@@ -1,0 +1,85 @@
+/* ── 11. Split Feature Block ── */
+.preview-split {
+  display: grid;
+  align-items: center;
+  gap: 64px;
+  padding: 80px 48px;
+}
+.preview-split--img-left  { grid-template-columns: 1fr 1fr; }
+.preview-split--img-right { grid-template-columns: 1fr 1fr; }
+.preview-split--img-right .preview-split__media { order: 2; }
+.preview-split--img-right .preview-split__content { order: 1; }
+
+.preview-split__media {
+  border-radius: 16px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #18181b, #09090b);
+  border: 1px solid #27272a;
+  min-height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+}
+.preview-split__content { display: flex; flex-direction: column; gap: 20px; }
+.preview-split__label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #ff9e0b;
+}
+.preview-split__title { font-size: 2rem; font-weight: 800; color: #ffffff; line-height: 1.2; }
+.preview-split__body { font-size: 1rem; color: #a1a1aa; line-height: 1.7; }
+.preview-split__features { display: flex; flex-direction: column; gap: 12px; }
+.preview-split__feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 14px;
+  color: #a1a1aa;
+}
+.preview-split__feature-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(255, 158, 11, 0.1);
+  color: #ff9e0b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 12px;
+}
+
+/* Split Feature Fluid Scale */
+@container (max-width: 768px) {
+  .preview-split {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+    padding: 48px 24px !important;
+  }
+  .preview-split__media {
+    order: 1 !important;
+    min-height: 240px !important;
+    font-size: 36px !important;
+  }
+  .preview-split__content {
+    order: 2 !important;
+  }
+  .preview-split__title {
+    font-size: 1.75rem !important;
+  }
+}
+
+@container (max-width: 480px) {
+  .preview-split {
+    padding: 32px 16px !important;
+  }
+  .preview-split__title {
+    font-size: 1.35rem !important;
+  }
+  .preview-split__body {
+    font-size: 0.875rem !important;
+  }
+}

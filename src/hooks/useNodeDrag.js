@@ -38,6 +38,10 @@ export default function useNodeDrag(node, parentId, wrapperRef, activeTree, acti
     const widthVal = node.props?.width;
     const isFullWidth = isLayout && (widthVal === 0 || widthVal === undefined);
 
+    const parentEl = el.parentElement;
+    const parentWidth = parentEl ? parentEl.offsetWidth : 1280;
+    const parentHeight = parentEl ? parentEl.offsetHeight : 650;
+
     dragState.current = {
       startMouseX,
       startMouseY,
@@ -46,10 +50,14 @@ export default function useNodeDrag(node, parentId, wrapperRef, activeTree, acti
       isFullWidth,
       nodeWidth:  rect.width,
       nodeHeight: rect.height,
+      parentWidth,
+      parentHeight,
       moved: false,
       rafId: null,
       latestMouseX: e.clientX,
       latestMouseY: e.clientY,
+      grabOffsetX: startMouseX - rect.left,
+      grabOffsetY: startMouseY - rect.top,
     };
 
     el.classList.add('node-dragging');
@@ -69,8 +77,14 @@ export default function useNodeDrag(node, parentId, wrapperRef, activeTree, acti
 
         const dx = d.latestMouseX - d.startMouseX;
         const dy = d.latestMouseY - d.startMouseY;
-        const newLeft = d.isFullWidth ? d.startLeft : d.startLeft + dx;
-        const newTop  = d.startTop + dy;
+        let newLeft = d.isFullWidth ? d.startLeft : d.startLeft + dx;
+        let newTop  = d.startTop + dy;
+
+        const maxLeft = Math.max(0, d.parentWidth - d.nodeWidth);
+        const maxTop = Math.max(0, d.parentHeight - d.nodeHeight);
+        
+        newLeft = Math.max(0, Math.min(maxLeft, newLeft));
+        newTop = Math.max(0, Math.min(maxTop, newTop));
 
         // Visual-only update during drag — no React state, no re-render
         wrapperRef.current.style.left = `${newLeft}px`;
@@ -101,14 +115,17 @@ export default function useNodeDrag(node, parentId, wrapperRef, activeTree, acti
 
       if (slot) {
         const slotRect = slot.getBoundingClientRect();
-        const { relativeLeft, relativeTop } = calculateRelativeBounds({
-          clientX: dropX,
-          clientY: dropY,
-          containerRect: slotRect,
-          elementWidth:  ds.nodeWidth,
-          elementHeight: ds.nodeHeight,
-          padding: 0,
-        });
+        const elementScreenLeft = dropX - ds.grabOffsetX;
+        const elementScreenTop  = dropY - ds.grabOffsetY;
+
+        let relativeLeft = Math.round(elementScreenLeft - slotRect.left);
+        let relativeTop  = Math.round(elementScreenTop - slotRect.top);
+
+        const maxLeft = Math.max(0, slotRect.width - ds.nodeWidth);
+        const maxTop = Math.max(0, slotRect.height - ds.nodeHeight);
+
+        relativeLeft = Math.max(0, Math.min(maxLeft, relativeLeft));
+        relativeTop = Math.max(0, Math.min(maxTop, relativeTop));
 
         const slotIndexAttr = slot.getAttribute('data-slot-index');
         const slotIndex = slotIndexAttr !== null ? parseInt(slotIndexAttr, 10) : undefined;
@@ -142,14 +159,34 @@ export default function useNodeDrag(node, parentId, wrapperRef, activeTree, acti
       const canvasFrame = document.querySelector('.canvas-frame');
       if (canvasFrame) {
         const canvasRect = canvasFrame.getBoundingClientRect();
-        const { relativeLeft, relativeTop } = calculateRelativeBounds({
-          clientX: dropX,
-          clientY: dropY,
-          containerRect: canvasRect,
-          elementWidth:  ds.nodeWidth,
-          elementHeight: ds.nodeHeight,
-          padding: 10,
-        });
+        const isInsideCanvas = (
+          dropX >= canvasRect.left &&
+          dropX <= canvasRect.right &&
+          dropY >= canvasRect.top &&
+          dropY <= canvasRect.bottom
+        );
+
+        if (!isInsideCanvas) {
+          // Revert visual position styles and cancel drag
+          if (wrapperRef.current) {
+            wrapperRef.current.style.left = isAligned ? '0px' : `${ds.startLeft}px`;
+            wrapperRef.current.style.top  = isAligned ? '0px' : `${ds.startTop}px`;
+          }
+          return;
+        }
+
+        const elementScreenLeft = dropX - ds.grabOffsetX;
+        const elementScreenTop  = dropY - ds.grabOffsetY;
+
+        let relativeLeft = Math.round(elementScreenLeft - canvasRect.left);
+        let relativeTop  = Math.round(elementScreenTop - canvasRect.top);
+
+        const padding = 10;
+        const maxLeft = Math.max(padding, canvasRect.width - ds.nodeWidth - padding);
+        const maxTop = Math.max(padding, canvasRect.height - ds.nodeHeight - padding);
+
+        relativeLeft = Math.max(padding, Math.min(maxLeft, relativeLeft));
+        relativeTop = Math.max(padding, Math.min(maxTop, relativeTop));
 
         actions.moveNode({
           id: node.id,
@@ -165,9 +202,18 @@ export default function useNodeDrag(node, parentId, wrapperRef, activeTree, acti
         // Fallback: derive position from visual offset already applied
         const dx = dropX - ds.startMouseX;
         const dy = dropY - ds.startMouseY;
+        let newLeft = ds.isFullWidth ? ds.startLeft : ds.startLeft + dx;
+        let newTop  = ds.startTop + dy;
+
+        const maxLeft = Math.max(0, ds.parentWidth - ds.nodeWidth);
+        const maxTop = Math.max(0, ds.parentHeight - ds.nodeHeight);
+        
+        newLeft = Math.max(0, Math.min(maxLeft, newLeft));
+        newTop = Math.max(0, Math.min(maxTop, newTop));
+
         actions.updateProps(node.id, {
-          left: ds.isFullWidth ? ds.startLeft : ds.startLeft + dx,
-          top:  ds.startTop + dy,
+          left: newLeft,
+          top:  newTop,
         });
       }
     }

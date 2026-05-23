@@ -1,4 +1,5 @@
 import React from 'react';
+import './ImageMedia.css';
 
 export const config = {
   type: 'ImageMedia',
@@ -24,7 +25,7 @@ export const config = {
 
 export function Renderer({ props }) {
   return (
-    <div className="preview-image-wrapper" style={{ height: props.height, borderRadius: props.borderRadius }}>
+    <div className="preview-image-wrapper" style={{ height: props.height, borderRadius: `${props.borderRadius ?? 0}px` }}>
       {props.src ? (
         <img src={props.src} alt={props.alt} style={{ objectFit: props.objectFit }} />
       ) : (

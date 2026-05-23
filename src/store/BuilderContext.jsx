@@ -1,6 +1,7 @@
 // store/BuilderContext.jsx
 import { createContext, useContext, useReducer, useEffect, useCallback } from 'react';
-import { builderReducer, initialState } from './builderReducer.js';
+import { builderReducer } from './builderReducer.js';
+import { initialState } from '../utils/defaults.js';
 
 const STORAGE_KEY = 'frontend-guru-state';
 
@@ -88,6 +89,8 @@ export function BuilderProvider({ children }) {
     reorderNode: useCallback((id, dir) => dispatch({ type: 'REORDER_NODE', payload: { id, direction: dir } }), []),
 
     updateProps: useCallback((id, patch) => dispatch({ type: 'UPDATE_PROPS', payload: { id, patch } }), []),
+
+    updatePropsSilent: useCallback((id, patch) => dispatch({ type: 'UPDATE_PROPS_SILENT', payload: { id, patch } }), []),
 
     batchUpdateProps: useCallback((updates) => dispatch({ type: 'BATCH_UPDATE_PROPS', payload: { updates } }), []),
 

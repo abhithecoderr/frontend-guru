@@ -1,0 +1,86 @@
+/* ── 9. Hero Banner ── */
+.preview-hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 48px;
+  padding: 80px 48px;
+  border: 1px solid #27272a;
+  border-radius: 12px;
+  min-height: 480px;
+}
+.preview-hero__content { display: flex; flex-direction: column; gap: 20px; }
+.preview-hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  background: rgba(255, 158, 11, 0.1);
+  border: 1px solid rgba(255, 158, 11, 0.3);
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #ff9e0b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  width: fit-content;
+}
+.preview-hero__title {
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: #ffffff;
+}
+.preview-hero__title span { color: #ff9e0b; }
+.preview-hero__subtitle { font-size: 1.125rem; color: #a1a1aa; line-height: 1.6; }
+.preview-hero__actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.preview-hero__media {
+  border-radius: 16px;
+  overflow: hidden;
+  background: rgba(255, 158, 11, 0.04);
+  border: 1px solid #27272a;
+  min-height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ff9e0b;
+  font-size: 48px;
+}
+
+/* Hero Banner Fluid Scale */
+@container (max-width: 768px) {
+  .preview-hero {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+    padding: 48px 24px !important;
+    text-align: center !important;
+  }
+  .preview-hero__content {
+    align-items: center !important;
+  }
+  .preview-hero__title {
+    font-size: 2.25rem !important;
+  }
+  .preview-hero__subtitle {
+    font-size: 1rem !important;
+  }
+  .preview-hero__actions {
+    justify-content: center !important;
+  }
+  .preview-hero__media {
+    min-height: 240px !important;
+    font-size: 36px !important;
+  }
+}
+
+@container (max-width: 480px) {
+  .preview-hero {
+    padding: 32px 16px !important;
+  }
+  .preview-hero__title {
+    font-size: 1.75rem !important;
+  }
+  .preview-hero__subtitle {
+    font-size: 0.875rem !important;
+  }
+}

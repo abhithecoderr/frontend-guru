@@ -1,0 +1,6 @@
+/* ── 4. Responsive Grid ── */
+.responsive-grid {
+  display: grid;
+  width: 100%;
+  box-sizing: border-box;
+}

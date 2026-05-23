@@ -1,0 +1,20 @@
+/* ── 5. Text / Heading ── */
+.preview-text-block {
+  padding: 8px 0;
+  line-height: 1.6;
+  word-break: break-word;
+}
+.preview-text-block.tag-h1 { font-size: 2.25rem; font-weight: 800; line-height: 1.15; }
+.preview-text-block.tag-h2 { font-size: 1.75rem; font-weight: 700; }
+.preview-text-block.tag-h3 { font-size: 1.375rem; font-weight: 700; }
+.preview-text-block.tag-h4 { font-size: 1.125rem; font-weight: 600; }
+.preview-text-block.tag-h5 { font-size: 1rem; font-weight: 600; }
+.preview-text-block.tag-h6 { font-size: 0.875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+.preview-text-block.tag-p  { font-size: 1rem; }
+
+/* Text Heading Block Scale */
+@container (max-width: 600px) {
+  .preview-text-block.tag-h1 { font-size: 1.75rem !important; }
+  .preview-text-block.tag-h2 { font-size: 1.45rem !important; }
+  .preview-text-block.tag-h3 { font-size: 1.25rem !important; }
+}

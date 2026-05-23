@@ -109,7 +109,7 @@ export default function InspectorPanel() {
   const parentId = found?.parentId;
   const def = node ? getDefinition(node.type) : null;
   const isLayout = def ? def.group === 'Layout Components' : false;
-  const hasSelectedSlot = !!(node && state.selectedSlot && state.selectedSlot.nodeId === node.id);
+  const hasSelectedSlot = !!(node && state.selectedSlot && state.selectedSlot.nodeId === node.id) && node.type !== 'SectionBlock';
 
   const [activeTab, setActiveTab] = useState('container');
 
@@ -146,6 +146,26 @@ export default function InspectorPanel() {
       const count = Math.max(1, parseInt(value) || 1);
       const heights = Array(count).fill(Math.round(10000 / count) / 100);
       actions.updateProps(node.id, { rowsCount: count, rowHeights: heights });
+    } else if (key === 'defaultSlotAlignX') {
+      // Clear individual X alignments when updating parent-level fallback X alignment
+      const nextSlots = (node.props.slotsProps || []).map(slotProp => {
+        const { alignX, ...rest } = slotProp;
+        return rest;
+      });
+      actions.updateProps(node.id, {
+        defaultSlotAlignX: value,
+        slotsProps: nextSlots
+      });
+    } else if (key === 'defaultSlotAlignY') {
+      // Clear individual Y alignments when updating parent-level fallback Y alignment
+      const nextSlots = (node.props.slotsProps || []).map(slotProp => {
+        const { alignY, ...rest } = slotProp;
+        return rest;
+      });
+      actions.updateProps(node.id, {
+        defaultSlotAlignY: value,
+        slotsProps: nextSlots
+      });
     } else {
       actions.updateProps(node.id, { [key]: value });
     }
@@ -164,8 +184,8 @@ export default function InspectorPanel() {
         </span>
       </div>
 
-      {/* Tab Switchers for Layout Components */}
-      {isLayout && (
+      {/* Tab Switchers for Layout Components (Excluding SectionBlock since it has no rigid grid/flex slot layout controls) */}
+      {isLayout && node.type !== 'SectionBlock' && (
         <div className="inspector-tabs">
           <button
             type="button"
@@ -187,36 +207,72 @@ export default function InspectorPanel() {
       <div className="inspector__fields">
         {activeTab === 'container' ? (
           <>
-            <div className="inspector__section-label">Properties</div>
-            {def.schema.map(field => {
-              const Widget = FIELD_MAP[field.type] || TextField;
-              return (
-                <Widget
-                  key={field.key}
-                  fieldKey={field.key}
-                  label={field.label}
-                  value={node.props[field.key]}
-                  options={field.options}
-                  unit={field.unit}
-                  onChange={handleChange}
-                />
-              );
-            })}
+            {(() => {
+              const externalAlignKeys = ['alignItems', 'justifyContent'];
+              const genericSchema = def.schema.filter(field => !externalAlignKeys.includes(field.key));
+              const externalSchema = def.schema.filter(field => externalAlignKeys.includes(field.key));
 
-            {/* Parent Default Drop Zone Alignments (Layout Only) */}
-            {isLayout && (
+              return (
+                <>
+                  {genericSchema.length > 0 && (
+                    <>
+                      <div className="inspector__section-label">Properties</div>
+                      {genericSchema.map(field => {
+                        const Widget = FIELD_MAP[field.type] || TextField;
+                        return (
+                          <Widget
+                            key={field.key}
+                            fieldKey={field.key}
+                            label={field.label}
+                            value={node.props[field.key]}
+                            options={field.options}
+                            unit={field.unit}
+                            onChange={handleChange}
+                          />
+                        );
+                      })}
+                    </>
+                  )}
+
+                  {/* External drop zones alignment */}
+                  {isLayout && node.type !== 'SectionBlock' && externalSchema.length > 0 && (
+                    <>
+                      <div className="inspector__section-label" style={{ marginTop: 'var(--space-4)' }}>🌐 External Drop Zones Alignment</div>
+                      {externalSchema.map(field => {
+                        const Widget = FIELD_MAP[field.type] || TextField;
+                        const labelSuffix = field.key === 'justifyContent' ? ' (X-Axis)' : ' (Y-Axis)';
+                        return (
+                          <Widget
+                            key={field.key}
+                            fieldKey={field.key}
+                            label={field.label + labelSuffix}
+                            value={node.props[field.key]}
+                            options={field.options}
+                            unit={field.unit}
+                            onChange={handleChange}
+                          />
+                        );
+                      })}
+                    </>
+                  )}
+                </>
+              );
+            })()}
+
+            {/* Parent Default Drop Zone Alignments (Layout Only, Excluding SectionBlock) */}
+            {isLayout && node.type !== 'SectionBlock' && (
               <>
-                <div className="inspector__section-label" style={{ marginTop: 'var(--space-4)' }}>🔧 Default Slot Alignments</div>
+                <div className="inspector__section-label" style={{ marginTop: 'var(--space-4)' }}>🔧 Internal Drop Zone Alignment (All Slots)</div>
                 <SelectField
                   fieldKey="defaultSlotAlignX"
-                  label="Default Content Align X"
+                  label="Common Content Align X (Horizontal)"
                   value={node.props.defaultSlotAlignX || 'none'}
                   options={['none', 'left', 'center', 'right']}
                   onChange={handleChange}
                 />
                 <SelectField
                   fieldKey="defaultSlotAlignY"
-                  label="Default Content Align Y"
+                  label="Common Content Align Y (Vertical)"
                   value={node.props.defaultSlotAlignY || 'none'}
                   options={['none', 'top', 'center', 'bottom']}
                   onChange={handleChange}
@@ -238,6 +294,14 @@ export default function InspectorPanel() {
               fieldKey="height"
               label="Height (0 = Auto)"
               value={node.props.height !== undefined ? node.props.height : 0}
+              unit="px"
+              onChange={handleChange}
+            />
+
+            <NumberField
+              fieldKey="minHeight"
+              label="Min Height"
+              value={node.props.minHeight !== undefined ? node.props.minHeight : 20}
               unit="px"
               onChange={handleChange}
             />
